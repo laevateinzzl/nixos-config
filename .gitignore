@@ -1,0 +1,143 @@
+# NixOS 配置 .gitignore
+
+# 敏感信息
+hardware-configuration.nix
+user-passwords/
+*.key
+*.pem
+*.crt
+*.p12
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+*.log
+
+# 构建产物
+result*
+*. derivation
+
+# 用户特定配置
+/home/yourusername/.config/nixpkgs/config.nix
+/home/yourusername/.local/state/
+/home/yourusername/.cache/
+
+# 密钥和证书
+*.env
+.env.local
+.env.*.local
+secrets/
+private/
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 编辑器特定文件
+.vscode/
+.idea/
+.vscodium/
+*.code-workspace
+
+# 系统生成的文件
+.system-state
+nix-channel-*
+channel-*
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.coverage
+.pytest_cache/
+.mypy_cache/
+
+# Rust
+target/
+Cargo.lock
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.prof
+
+# IDE
+*.swp
+*.swo
+*~
+
+# 操作系统
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 文档生成
+docs/_build/
+
+# 测试覆盖率
+coverage/
+*.lcov
+
+# 临时目录
+tmp/
+temp/
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+
+# 日志文件
+logs/
+*.log
+
+# 用户数据
+Downloads/
+Documents/
+Pictures/
+Music/
+Videos/
+
+# 大文件
+*.iso
+*.img
+*.tar.gz
+*.zip
+*.7z
+
+# 自定义配置
+local.nix
+personal.nix
+overlays.nix
+
+# 密钥管理
+age-box/
+agenix/
+secrets.nix
+
+# 容器相关
+.docker/
+docker-compose.override.yml
