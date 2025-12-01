@@ -45,7 +45,7 @@
     wpa_supplicant
 
     # 音频工具
-    pulseaudio
+    # pulseaudio # 使用pipewire代替
     pavucontrol
     alsaUtils
 
@@ -147,13 +147,14 @@
     firejail.enable = true;
 
     # Git配置
+    # Git配置 (移至 home-manager)
     git = {
       enable = true;
-      config = {
-        init.defaultBranch = "main";
-        user.name = "Your Name";
-        user.email = "your.email@example.com";
-      };
+      # config = {
+      #   init.defaultBranch = "main";
+      #   user.name = "Your Name";
+      #   user.email = "your.email@example.com";
+      # };
     };
 
     # Zsh
@@ -187,9 +188,10 @@
   # 系统服务
   services = {
     # 自动挂载
-    udisks2.enable = true;
+    # 自动挂载 (移至 modules/system/desktop.nix)
+    # udisks2.enable = true;
     devmon.enable = true;
-    udisks2.mountOnMedia = true;
+    # udisks2.mountOnMedia = true;
 
     # 电源管理
     auto-cpufreq.enable = true;
@@ -202,8 +204,9 @@
     # saned.enable = true;
 
     # 蓝牙
-    bluetooth.enable = true;
-    blueman.enable = true;
+    # 蓝牙 (移至 modules/system/desktop.nix)
+    # bluetooth.enable = true;
+    # blueman.enable = true;
 
     # 定位服务
     geoclue2.enable = true;

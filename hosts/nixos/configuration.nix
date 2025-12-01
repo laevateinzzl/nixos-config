@@ -34,13 +34,9 @@
   nix.settings.auto-optimise-store = true;
 
   # 系统包
+  # 系统包
   environment.systemPackages = with pkgs; [
-    git
-    vim
-    wget
-    curl
-    htop
-    btop
+    # 基础工具已在 modules/system/packages.nix 中定义
   ];
 
   # 启用zsh
@@ -58,23 +54,24 @@
     fcitx5.enable = true;
   };
 
-  # 启用niri窗口管理器
-  programs.niri.enable = true;
+  # Niri窗口管理器配置已在 modules/system/desktop.nix 中定义
+  # programs.niri.enable = true;
 
-  # 启用Steam
-  programs.steam = {
-    enable = true;
-    gamescopeSession.enable = true;
-  };
+  # Steam配置已在 modules/system/gaming.nix 中定义
+  # programs.steam = {
+  #   enable = true;
+  #   gamescopeSession.enable = true;
+  # };
 
   # 启用输入法
   i18n.inputMethod = {
-    enabled = "fcitx5";
+    type = "fcitx5";
+    enable = true;
     fcitx5.addons = with pkgs; [ fcitx5-rime ];
   };
 
   # 启用声音
-  hardware.pulseaudio.enable = false;
+  # hardware.pulseaudio.enable = false; # 默认已禁用
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
