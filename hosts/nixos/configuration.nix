@@ -7,12 +7,12 @@
   ];
 
   # 基础系统配置
-  system.stateVersion = "24.11"; # 根据安装时的版本调整
+  system.stateVersion = "25.11"; # 根据安装时的版本调整
 
   # 用户配置 - 请修改为实际用户名
   users.users.laevatein = {
     isNormalUser = true;
-    description = "Your Name";
+    description = "laevatein";
     extraGroups = [ "networkmanager" "wheel" "audio" "video" "input" "dialout" ];
     shell = pkgs.zsh;
   };

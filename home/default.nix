@@ -34,7 +34,7 @@
   # 用户基本信息
   home.username = "laevatein";
   home.homeDirectory = "/home/laevatein";
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.11";
 
   # 启用home-manager功能
   programs.home-manager.enable = true;
