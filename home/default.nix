@@ -220,8 +220,8 @@
   # Git配置
   programs.git = {
     enable = true;
-    userName = "Your Name";
-    userEmail = "your.email@example.com";
+    userName = "laevateinzzl";
+    userEmail = "zhaoaa966@163.com";
     signing = {
       key = null; # 设置你的GPG密钥ID
       signByDefault = true;
