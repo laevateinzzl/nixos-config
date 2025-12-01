@@ -3,22 +3,27 @@
 {
   # 系统安全配置
 
-  # 防火墙
+  # 防火墙（统一在此定义基础策略，其它模块按需追加端口）
   networking.firewall = {
     enable = true;
     allowPing = false;
     logRefusedPackets = true;
     trustedInterfaces = [ "lo" ];
+    # 只开放必要端口
+    allowedTCPPorts = [ 22 ]; # SSH
+    # allowedUDPPorts = [ ]; # 无UDP端口
+    extraPackages = [ pkgs.ipset ];
+    extraStopCommands = ''
+      # 禁用ping
+      echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+      # 防止SYN攻击
+      echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+      # 禁用IP源路由
+      echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+      # 禁用IP重定向
+      echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
+    '';
   };
-
-  # AppArmor
-  security.apparmor = {
-    enable = true;
-    killUnconfinedConfinables = true;
-  };
-
-  # SELinux（可选，与AppArmor二选一）
-  # security.selinux.enable = true;
 
   # 用户和组权限
   users.groups = {
@@ -74,24 +79,7 @@
     ];
   };
 
-  # 防火墙更严格规则
-  networking.firewall = {
-    # 只开放必要端口
-    allowedTCPPorts = [ 22 ]; # SSH
-    # allowedUDPPorts = [ ]; # 无UDP端口
-    # 禁用ping
-    extraPackages = [ pkgs.ipset ];
-    extraStopCommands = ''
-      # 禁用ping
-      echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-      # 防止SYN攻击
-      echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-      # 禁用IP源路由
-      echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
-      # 禁用IP重定向
-      echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
-    '';
-  };
+  # 其它安全相关内核、服务配置见下
 
   # 安全内核参数
   boot.kernel.sysctl = {
@@ -124,74 +112,6 @@
     "fs.protected_hardlinks" = 1;
     "fs.protected_symlinks" = 1;
     "fs.suid_dumpable" = 0;
-  };
-
-  # 安全包
-  environment.systemPackages = with pkgs; [
-    # 加密工具
-    gnupg
-    cryptsetup
-    veracrypt
-    openssl
-    age
-
-    # 安全扫描
-    rkhunter
-    chkrootkit
-    lynis
-    nmap
-    wireshark-cli
-
-    # 系统硬化
-    hardening
-
-    # 防火墙
-    ufw
-    gufw
-
-    # 入侵检测
-    aide
-    fail2ban
-
-    # 日志审计
-    audit
-
-    # 密码管理
-    keepassxc
-    bitwarden-cli
-
-    # 病毒扫描
-    clamav
-
-    # 网络安全
-    tor
-    torsocks
-
-    # 文件完整性
-    tripwire
-  ];
-
-  # 安全服务
-  services = {
-    # Fail2ban
-    fail2ban = {
-      enable = true;
-      maxretry = 3;
-      bantime = "1h";
-      ignoreIP = [ "127.0.0.1/8" "::1/128" ];
-    };
-
-    # AIDE文件完整性检查
-    aide.enable = true;
-
-    # ClamAV杀毒
-    clamav.daemon.enable = true;
-
-    # 审计系统
-    auditd.enable = true;
-
-    # 自动更新（谨慎使用）
-    # auto-upgrade.enable = true;
   };
 
   # 文件权限

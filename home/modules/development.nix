@@ -3,114 +3,325 @@
 {
   # 开发环境配置
 
-  # 基础开发工具
-  home.packages = with pkgs; [
-    # 版本控制
-    git
-    git-crypt
-    lazygit
-    gh
-    glab
-    tig
-    delta
+  # 所有开发相关包在此统一声明，避免多次覆盖 home.packages
+  home.packages =
+    let
+      baseDev = with pkgs; [
+        # 版本控制
+        git
+        git-crypt
+        lazygit
+        gh
+        glab
+        tig
+        delta
 
-    # 构建工具
-    cmake
-    meson
-    ninja
-    gnumake
-    bear
+        # 构建工具
+        cmake
+        meson
+        ninja
+        gnumake
+        bear
 
-    # 编译器
-    gcc
-    clang
-    rustc
-    cargo
-    go
-    nodejs
-    python3
-    ruby
-    php
+        # 编译器
+        gcc
+        clang
+        rustc
+        cargo
+        go
+        nodejs
+        python3
+        ruby
+        php
 
-    # 包管理器
-    npm
-    yarn
-    pnpm
-    pipx
-    poetry
-    pipenv
-    rbenv
-    nvm
+        # 包管理器
+        npm
+        yarn
+        pnpm
+        pipx
+        poetry
+        pipenv
+        rbenv
+        nvm
 
-    # 调试工具
-    gdb
-    lldb
-    valgrind
-    strace
-    ltrace
-    perf
+        # 调试工具
+        gdb
+        lldb
+        valgrind
+        strace
+        ltrace
+        perf
 
-    # 代码分析
-    cloc
-      tokei
-    cppcheck
-    shellcheck
-    flake8
-    pylint
-    mypy
-    eslint
-    prettier
-    black
-    rust-analyzer
-    clippy
-    rustfmt
+        # 代码分析
+        cloc
+        tokei
+        cppcheck
+        shellcheck
+        flake8
+        pylint
+        mypy
+        eslint
+        prettier
+        black
+        rust-analyzer
+        clippy
+        rustfmt
 
-    # 容器化
-    docker
-    docker-compose
-    podman
-    buildah
-    skopeo
+        # 容器化
+        docker
+        docker-compose
+        podman
+        buildah
+        skopeo
 
-    # 虚拟化
-    qemu
-    virt-manager
-    virtualbox
+        # 虚拟化
+        qemu
+        virt-manager
+        virtualbox
 
-    # CI/CD
-    jenkins
-      gitlab-runner
-      github-cli
+        # CI/CD
+        jenkins
+        gitlab-runner
+        github-cli
 
-    # API 测试
-    postman
-    insomnia
-    httpie
-      curlie
+        # API 测试
+        postman
+        insomnia
+        httpie
+        curlie
 
-    # 数据库工具
-    mysql-client
-    postgresql
-    sqlite
-    redis
-    dbeaver
+        # 数据库工具
+        mysql-client
+        postgresql
+        sqlite
+        redis
+        dbeaver
 
-    # 文档
-    mkdocs
-      sphinx
-      pandoc
-      doxygen
+        # 文档
+        mkdocs
+        sphinx
+        pandoc
+        doxygen
 
-    # 其他工具
-    jq
-      yq
-      toml-cli
-      cheat
-      tealdeer
-      thefuck
-      shellcheck
-      shfmt
-    ];
+        # 其他工具
+        jq
+        yq
+        toml-cli
+        cheat
+        tealdeer
+        thefuck
+        shfmt
+      ];
+
+      pythonDev = with pkgs; [
+        python3
+        python3Packages.pip
+        python3Packages.virtualenv
+        python3Packages.pipenv
+        python3Packages.poetry
+        python3Packages.black
+        python3Packages.isort
+        python3Packages.flake8
+        python3Packages.mypy
+        python3Packages.pytest
+        python3Packages.setuptools
+        python3Packages.wheel
+      ];
+
+      # Node 生态在 baseDev 里已经包含 nodejs/npm/yarn/pnpm，这里暂不额外引入
+
+      rustDev = with pkgs; [
+        rustc
+        cargo
+        rust-analyzer
+        clippy
+        rustfmt
+        cargo-watch
+        cargo-edit
+        cargo-audit
+        cargo-outdated
+      ];
+
+      goDev = with pkgs; [
+        go
+        gopls
+        delve
+        golint
+        go-tools
+      ];
+
+      cppDev = with pkgs; [
+        gcc
+        clang
+        clang-tools
+        gdb
+        lldb
+        cmake
+        make
+        ninja
+        pkg-config
+        valgrind
+      ];
+
+      javaDev = with pkgs; [
+        jdk17
+        maven
+        gradle
+      ];
+
+      tools = with pkgs; [
+        (writeShellScriptBin "create-project" ''
+          #!/bin/sh
+          # 创建项目模板
+
+          if [ $# -eq 0 ]; then
+            echo "Usage: create-project <project-name> [type]"
+            echo "Types: python, node, rust, go, cpp, docker"
+            exit 1
+          fi
+
+          PROJECT_NAME="$1"
+          PROJECT_TYPE="''${2:-python}"
+          PROJECT_DIR="$HOME/projects/$PROJECT_NAME"
+
+          if [ -d "$PROJECT_DIR" ]; then
+            echo "Project already exists: $PROJECT_DIR"
+            exit 1
+          fi
+
+          mkdir -p "$PROJECT_DIR"
+          cd "$PROJECT_DIR"
+
+          case "$PROJECT_TYPE" in
+            python)
+              python3 -m venv venv
+              echo "venv/" > .gitignore
+              echo "__pycache__/" >> .gitignore
+              echo "*.pyc" >> .gitignore
+              echo "# $PROJECT_NAME" > README.md
+              echo "" >> README.md
+              echo "## Description" >> README.md
+              echo "" >> README.md
+              echo "## Installation" >> README.md
+              echo "" >> README.md
+              echo "## Usage" >> README.md
+              echo "print(\"Hello, World!\")" > main.py
+              git init
+              git add .
+              git commit -m "Initial commit"
+              ;;
+
+            node)
+              npm init -y
+              echo "node_modules/" > .gitignore
+              echo ".env" >> .gitignore
+              echo "# $PROJECT_NAME" > README.md
+              npm install --save-dev typescript @types/node eslint prettier
+              echo "console.log('Hello, World!');" > index.js
+              git init
+              git add .
+              git commit -m "Initial commit"
+              ;;
+
+            rust)
+              cargo init
+              echo "# $PROJECT_NAME" > README.md
+              git init
+              git add .
+              git commit -m "Initial commit"
+              ;;
+
+            go)
+              go mod init "$PROJECT_NAME"
+              mkdir -p cmd pkg
+              cat > cmd/main.go << EOF
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}
+EOF
+              echo "# $PROJECT_NAME" > README.md
+              git init
+              git add .
+              git commit -m "Initial commit"
+              ;;
+
+            cpp)
+              cat > CMakeLists.txt << EOF
+cmake_minimum_required(VERSION 3.10)
+project($PROJECT_NAME)
+
+add_executable($PROJECT_NAME main.cpp)
+EOF
+              cat > main.cpp << EOF
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+EOF
+              mkdir -p build
+              echo "build/" > .gitignore
+              echo "CMakeCache.txt" >> .gitignore
+              echo "CMakeFiles/" >> .gitignore
+              echo "cmake_install.cmake" >> .gitignore
+              echo "# $PROJECT_NAME" > README.md
+              git init
+              git add .
+              git commit -m "Initial commit"
+              ;;
+
+            docker)
+              cat > Dockerfile << EOF
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+EOF
+              echo "node_modules/" > .gitignore
+              echo ".env" >> .gitignore
+              npm init -y
+              echo "# $PROJECT_NAME" > README.md
+              git init
+              git add .
+              git commit -m "Initial commit"
+              ;;
+
+            *)
+              echo "Unknown project type: $PROJECT_TYPE"
+              echo "Available types: python, node, rust, go, cpp, docker"
+              exit 1
+              ;;
+          esac
+
+          echo "Created $PROJECT_TYPE project: $PROJECT_DIR"
+          echo "To start developing:"
+          echo "  cd $PROJECT_DIR"
+          case "$PROJECT_TYPE" in
+            python) echo "  source venv/bin/activate" ;;
+            node) echo "  npm install" ;;
+            rust) echo "  cargo build" ;;
+            go) echo "  go run ./cmd/main.go" ;;
+            cpp) echo "  cd build && cmake .. && make" ;;
+            docker) echo "  docker build -t $PROJECT_NAME ." ;;
+          esac
+        '')
+      ];
+    in
+      baseDev
+      ++ pythonDev
+      ++ rustDev
+      ++ goDev
+      ++ cppDev
+      ++ javaDev
+      ++ tools;
 
   # 语言特定配置
   programs.vscode = {
@@ -213,79 +424,6 @@
   # Docker 配置
   programs.docker.enable = true;
 
-  # Python 开发配置
-  home.packages = with pkgs; [
-    python3
-    python3Packages.pip
-    python3Packages.virtualenv
-    python3Packages.pipenv
-    python3Packages.poetry
-    python3Packages.black
-    python3Packages.isort
-    python3Packages.flake8
-    python3Packages.mypy
-    python3Packages.pytest
-    python3Packages.setuptools
-    python3Packages.wheel
-  ];
-
-  # Node.js 开发配置
-  home.packages = with pkgs.nodePackages; [
-    nodejs
-    npm
-    yarn
-    pnpm
-    typescript
-    ts-node
-    eslint
-    prettier
-    nodemon
-    pkg
-  ];
-
-  # Rust 开发配置
-  home.packages = with pkgs; [
-    rustc
-    cargo
-    rust-analyzer
-    clippy
-    rustfmt
-    cargo-watch
-    cargo-edit
-    cargo-audit
-    cargo-outdated
-  ];
-
-  # Go 开发配置
-  home.packages = with pkgs; [
-    go
-    gopls
-    delve
-    golint
-    go-tools
-  ];
-
-  # C/C++ 开发配置
-  home.packages = with pkgs; [
-    gcc
-    clang
-    clang-tools
-    gdb
-    lldb
-    cmake
-    make
-    ninja
-    pkg-config
-    valgrind
-  ];
-
-  # Java 开发配置
-  home.packages = with pkgs; [
-    jdk17
-    maven
-    gradle
-  ];
-
   # 开发配置文件
   home.file.".devrc".text = ''
     # 开发环境配置
@@ -348,143 +486,4 @@
     test-node = "npm test";
     test-rust = "cargo test";
   };
-
-  # 项目模板
-  home.packages = with pkgs; [
-    (writeShellScriptBin "create-project" ''
-      #!/bin/sh
-      # 创建项目模板
-
-      if [ $# -eq 0 ]; then
-        echo "Usage: create-project <project-name> [type]"
-        echo "Types: python, node, rust, go, cpp, docker"
-        exit 1
-      fi
-
-      PROJECT_NAME="$1"
-      PROJECT_TYPE="''${2:-python}"
-      PROJECT_DIR="$HOME/projects/$PROJECT_NAME"
-
-      if [ -d "$PROJECT_DIR" ]; then
-        echo "Project already exists: $PROJECT_DIR"
-        exit 1
-      fi
-
-      mkdir -p "$PROJECT_DIR"
-      cd "$PROJECT_DIR"
-
-      case "$PROJECT_TYPE" in
-        python)
-          python3 -m venv venv
-          echo "venv/" > .gitignore
-          echo "__pycache__/" >> .gitignore
-          echo "*.pyc" >> .gitignore
-          echo "# $PROJECT_NAME" > README.md
-          echo "" >> README.md
-          echo "## Description" >> README.md
-          echo "" >> README.md
-          echo "## Installation" >> README.md
-          echo "" >> README.md
-          echo "## Usage" >> README.md
-          echo "print(\"Hello, World!\")" > main.py
-          git init
-          git add .
-          git commit -m "Initial commit"
-          ;;
-
-        node)
-          npm init -y
-          echo "node_modules/" > .gitignore
-          echo ".env" >> .gitignore
-          echo "# $PROJECT_NAME" > README.md
-          npm install --save-dev typescript @types/node eslint prettier
-          echo "console.log('Hello, World!');" > index.js
-          git init
-          git add .
-          git commit -m "Initial commit"
-          ;;
-
-        rust)
-          cargo init
-          echo "# $PROJECT_NAME" > README.md
-          git init
-          git add .
-          git commit -m "Initial commit"
-          ;;
-
-        go)
-          go mod init "$PROJECT_NAME"
-          mkdir -p cmd pkg
-          echo "package main" > cmd/main.go
-          echo "" >> cmd/main.go
-          echo "import \"fmt\"" >> cmd/main.go
-          echo "" >> cmd/main.go
-          echo "func main() {" >> cmd/main.go
-          echo "    fmt.Println(\"Hello, World!\")" >> cmd/main.go
-          echo "}" >> cmd/main.go
-          echo "# $PROJECT_NAME" > README.md
-          git init
-          git add .
-          git commit -m "Initial commit"
-          ;;
-
-        cpp)
-          echo "cmake_minimum_required(VERSION 3.10)" > CMakeLists.txt
-          echo "project($PROJECT_NAME)" >> CMakeLists.txt
-          echo "" >> CMakeLists.txt
-          echo "add_executable($PROJECT_NAME main.cpp)" >> CMakeLists.txt
-          echo "#include <iostream>" > main.cpp
-          echo "" >> main.cpp
-          echo "int main() {" >> main.cpp
-          echo "    std::cout << \"Hello, World!\" << std::endl;" >> main.cpp
-          echo "    return 0;" >> main.cpp
-          echo "}" >> main.cpp
-          mkdir -p build
-          echo "build/" > .gitignore
-          echo "CMakeCache.txt" >> .gitignore
-          echo "CMakeFiles/" >> .gitignore
-          echo "cmake_install.cmake" >> .gitignore
-          echo "# $PROJECT_NAME" > README.md
-          git init
-          git add .
-          git commit -m "Initial commit"
-          ;;
-
-        docker)
-          echo "FROM node:18-alpine" > Dockerfile
-          echo "WORKDIR /app" >> Dockerfile
-          echo "COPY package*.json ./" >> Dockerfile
-          echo "RUN npm install" >> Dockerfile
-          echo "COPY . ." >> Dockerfile
-          echo "EXPOSE 3000" >> Dockerfile
-          echo 'CMD ["npm", "start"]' >> Dockerfile
-          echo "node_modules/" > .gitignore
-          echo ".env" >> .gitignore
-          npm init -y
-          echo "# $PROJECT_NAME" > README.md
-          git init
-          git add .
-          git commit -m "Initial commit"
-          ;;
-
-        *)
-          echo "Unknown project type: $PROJECT_TYPE"
-          echo "Available types: python, node, rust, go, cpp, docker"
-          exit 1
-          ;;
-      esac
-
-      echo "Created $PROJECT_TYPE project: $PROJECT_DIR"
-      echo "To start developing:"
-      echo "  cd $PROJECT_DIR"
-      case "$PROJECT_TYPE" in
-        python) echo "  source venv/bin/activate" ;;
-        node) echo "  npm install" ;;
-        rust) echo "  cargo build" ;;
-        go) echo "  go run ./cmd/main.go" ;;
-        cpp) echo "  cd build && cmake .. && make" ;;
-        docker) echo "  docker build -t $PROJECT_NAME ." ;;
-      esac
-    '')
-  ];
 }

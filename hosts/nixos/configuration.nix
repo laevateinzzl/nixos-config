@@ -63,12 +63,7 @@
   #   gamescopeSession.enable = true;
   # };
 
-  # 启用输入法
-  i18n.inputMethod = {
-    type = "fcitx5";
-    enable = true;
-    fcitx5.addons = with pkgs; [ fcitx5-rime ];
-  };
+  # 启用输入法（具体配置在 modules/system/locale.nix 与 home/modules/input-method.nix）
 
   # 启用声音
   # hardware.pulseaudio.enable = false; # 默认已禁用

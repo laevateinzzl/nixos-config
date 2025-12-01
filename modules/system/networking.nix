@@ -15,15 +15,6 @@
       };
     };
 
-    # 防火墙
-    firewall = {
-      enable = true;
-      # 开放常用端口
-      allowedTCPPorts = [ 22 80 443 ];
-      allowedUDPPorts = [];
-      logRefusedPackets = true;
-    };
-
     # 代理设置（根据需要配置）
     # proxy.default = "http://127.0.0.1:8080/";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";

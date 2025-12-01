@@ -34,11 +34,9 @@
     };
   };
 
-  # 开放必要的防火墙端口
-  networking.firewall = {
-    allowedTCPPorts = [ 27036 27037 ];
-    allowedUDPPorts = [ 27031 27036 27037 ];
-  };
+  # 开放必要的防火墙端口（在全局防火墙基础上追加）
+  networking.firewall.allowedTCPPorts = [ 27036 27037 ];
+  networking.firewall.allowedUDPPorts = [ 27031 27036 27037 ];
 
   # 添加游戏相关包
   environment.systemPackages = with pkgs; [
@@ -75,6 +73,9 @@
     # 性能监控
     nvtop
     radeontop
+
+    # 可选：Lutris（非Steam游戏管理器）
+    lutris
   ];
 
   # 内核模块（一些游戏需要）
@@ -84,21 +85,13 @@
   ];
 
   # 系统服务
-  services = {
-    # uinput用于虚拟控制器
-    udev.packages = [ pkgs.xboxdrv ];
-  };
+  services.udev.packages = [ pkgs.xboxdrv ];
 
   # 用户组（允许访问游戏设备）
   users.groups = {
     input.members = [ "laevatein" ];
     gamemode.members = [ "laevatein" ];
   };
-
-  # 可选：Lutris（非Steam游戏管理器）
-  environment.systemPackages = with pkgs; [
-    lutris
-  ];
 
   # Wayland游戏支持
   environment.sessionVariables = {

@@ -73,7 +73,7 @@
     };
   };
 
-  # 安装 Catppuccin 相关包
+  # 安装 Catppuccin 相关包与脚本
   home.packages = with pkgs; [
     # 主题包
     catppuccin-gtk
@@ -103,23 +103,8 @@
     noto-fonts-cjk-serif
     noto-fonts-emoji
     jetbrains-mono
-  ];
 
-  # Kvantum 主题配置
-  home.file.".config/Kvantum/catppuccin-mocha".source = pkgs.catppuccin-kvantum;
-  home.file.".config/Kvantum/kvantum.kvconfig".text = ''
-    [General]
-    theme=Catppuccin-Mocha-Blue
-  '';
-
-  # 壁纸管理
-  home.file.".config/wallpapers" = {
-    source = ./wallpapers;
-    recursive = true;
-  };
-
-  # 壁纸切换脚本
-  home.packages = with pkgs; [
+    # 壁纸切换脚本
     (writeShellScriptBin "wallpaper-cycle" ''
       #!/bin/sh
       # 随机壁纸切换脚本
@@ -244,7 +229,87 @@
         exit 1
       fi
     '')
+
+    # pywal 颜色生成（可选）
+    (writeShellScriptBin "generate-wal-colors" ''
+      #!/bin/sh
+      # 生成 pywal 颜色配置
+
+      catppuccin_colors="$HOME/.config/theme/colors.sh"
+
+      if [ ! -f "$catppuccin_colors" ]; then
+        echo "Catppuccin colors not found"
+        exit 1
+      fi
+
+      # 加载颜色变量
+      . "$catppuccin_colors"
+
+      # 生成 wal 颜色文件
+      cat > "$HOME/.cache/wal/colors" << EOF
+#000000
+#f38ba8
+#a6e3a1
+#f9e2af
+#89b4fa
+#cba6f7
+#94e2d5
+#cdd6f4
+#45475a
+#f38ba8
+#a6e3a1
+#f9e2af
+#89b4fa
+#cba6f7
+#94e2d5
+#bac2de
+EOF
+
+      # 生成 wal 颜色配置
+      cat > "$HOME/.cache/wal/colors.json" << EOF
+{
+  "special": {
+    "background": "$BASE",
+    "foreground": "$TEXT",
+    "cursor": "$ROSEWATER"
+  },
+  "colors": {
+    "color0": "$SURFACE1",
+    "color1": "$RED",
+    "color2": "$GREEN",
+    "color3": "$YELLOW",
+    "color4": "$BLUE",
+    "color5": "$MAUVE",
+    "color6": "$TEAL",
+    "color7": "$TEXT",
+    "color8": "$SURFACE2",
+    "color9": "$RED",
+    "color10": "$GREEN",
+    "color11": "$YELLOW",
+    "color12": "$BLUE",
+    "color13": "$MAUVE",
+    "color14": "$TEAL",
+    "color15": "$TEXT"
+  }
+}
+EOF
+
+      echo "Wal colors generated successfully"
+    '')
   ];
+
+  # Kvantum 主题配置
+  home.file.".config/Kvantum/catppuccin-mocha".source = pkgs.catppuccin-kvantum;
+  home.file.".config/Kvantum/kvantum.kvconfig".text = ''
+    [General]
+    theme=Catppuccin-Mocha-Blue
+  '';
+
+  # 壁纸管理（文件由 home-manager 管理，内容由你自行放置）
+  home.file.".config/wallpapers" = {
+    source = ./wallpapers;
+    recursive = true;
+  };
 
   # 启动时设置壁纸
   home.file.".config/autostart-scripts/wallpaper.sh".text = ''
@@ -323,75 +388,6 @@
   '';
 
   home.file.".config/theme/colors.sh".executable = true;
-
-  # pywal 颜色生成（可选）
-  home.packages = with pkgs; [
-    (writeShellScriptBin "generate-wal-colors" ''
-      #!/bin/sh
-      # 生成 pywal 颜色配置
-
-      catppuccin_colors="$HOME/.config/theme/colors.sh"
-
-      if [ ! -f "$catppuccin_colors" ]; then
-        echo "Catppuccin colors not found"
-        exit 1
-      fi
-
-      # 加载颜色变量
-      . "$catppuccin_colors"
-
-      # 生成 wal 颜色文件
-      cat > "$HOME/.cache/wal/colors" << EOF
-#000000
-#f38ba8
-#a6e3a1
-#f9e2af
-#89b4fa
-#cba6f7
-#94e2d5
-#cdd6f4
-#45475a
-#f38ba8
-#a6e3a1
-#f9e2af
-#89b4fa
-#cba6f7
-#94e2d5
-#bac2de
-EOF
-
-      # 生成 wal 颜色配置
-      cat > "$HOME/.cache/wal/colors.json" << EOF
-{
-  "special": {
-    "background": "$BASE",
-    "foreground": "$TEXT",
-    "cursor": "$ROSEWATER"
-  },
-  "colors": {
-    "color0": "$SURFACE1",
-    "color1": "$RED",
-    "color2": "$GREEN",
-    "color3": "$YELLOW",
-    "color4": "$BLUE",
-    "color5": "$MAUVE",
-    "color6": "$TEAL",
-    "color7": "$TEXT",
-    "color8": "$SURFACE2",
-    "color9": "$RED",
-    "color10": "$GREEN",
-    "color11": "$YELLOW",
-    "color12": "$BLUE",
-    "color13": "$MAUVE",
-    "color14": "$TEAL",
-    "color15": "$TEXT"
-  }
-}
-EOF
-
-      echo "Wal colors generated successfully"
-    '')
-  ];
 
   # 终端颜色方案
   programs.bash.initExtra = ''
