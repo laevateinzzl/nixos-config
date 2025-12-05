@@ -170,7 +170,7 @@
       * {
           border: none;
           border-radius: 0;
-          font-family: "JetBrainsMono Nerd Font", sans-serif;
+          font-family: "JetBrains Maple Mono", sans-serif;
           font-size: 12px;
           min-height: 0;
       }

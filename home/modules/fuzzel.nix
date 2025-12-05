@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       main = {
-        font = "JetBrainsMono Nerd Font:size=12";
+        font = "JetBrains Maple Mono:size=12";
         line-height = 25;
         letter-spacing = 1;
 

@@ -25,12 +25,12 @@
     };
   };
 
+  # 触摸板支持
+  services.libinput.enable = true;
+
   # SDDM主题配置
   # 确保必要的包
   services.xserver = {
-    # 启用触摸板
-    libinput.enable = true;
-
     # 键盘布局
     xkb = {
       layout = "us";

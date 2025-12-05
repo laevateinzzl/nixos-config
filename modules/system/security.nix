@@ -137,15 +137,8 @@
     }
   ];
 
-  # 用户安全配置
-  users.users.laevatein = {
-    # 使用密码哈希而不是明文密码
-    hashedPasswordFile = "/etc/nixos/user-passwords/laevatein";
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" "input" "docker" ];
-    createHome = true;
-    home = "/home/laevatein";
-  };
+  # 用户密码配置 (用户定义在 configuration.nix 中，这里仅设置密码以避免冲突)
+  users.users.laevatein.hashedPasswordFile = "/etc/nixos/user-passwords/laevatein";
 
   # 系统自动锁定
   services.logind = {

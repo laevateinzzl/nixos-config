@@ -171,7 +171,7 @@
   gtk = {
     enable = true;
     font = {
-      name = "Noto Sans CJK SC";
+      name = "LXGW WenKai";
       size = 11;
     };
     iconTheme = {

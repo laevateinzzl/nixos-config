@@ -6,7 +6,7 @@
 
     settings = {
       # 基础设置
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = "JetBrains Maple Mono";
       font-size = 12;
       font-weight = 400;
       font-style = "normal";
@@ -62,7 +62,7 @@
       # 标题栏
       window-theme = "dark";
       window-decoration = true;
-      window-title-font-family = "JetBrainsMono Nerd Font";
+      window-title-font-family = "JetBrains Maple Mono";
       window-title-font-size = 12;
       window-title-background-color = "1e1e2e";
       window-title-foreground-color = "cdd6f4";

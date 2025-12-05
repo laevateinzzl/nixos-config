@@ -49,7 +49,7 @@
     accent = "blue";
     sddm.enable = true;
     plymouth.enable = true;
-    limine.enable = true;
+    # limine.enable = true; # 已切换到 systemd-boot
     tty.enable = true;
     fcitx5.enable = true;
   };

@@ -1,16 +1,13 @@
 { config, pkgs, inputs, ... }:
 
 {
-  # 使用limine bootloader
+  # 使用 systemd-boot
   boot.loader = {
-    limine = {
+    systemd-boot = {
       enable = true;
-      # 附加配置选项
       configurationLimit = 10; # 保留10个之前的配置
-      timeout = 5; # 启动超时时间（秒）
     };
-
-    # EFI支持
+    timeout = 5; # 启动超时时间（秒）
     efi.canTouchEfiVariables = true;
     efi.efiSysMountPoint = "/boot";
   };
@@ -20,10 +17,11 @@
 
   # 启动时加载的内核模块
   boot.kernelModules = [
-    "vboxdrv"
-    "vboxnetadp"
-    "vboxnetflt"
+    # VirtualBox 模块由 virtualisation.virtualbox.host 服务自动管理
   ];
+
+  # VirtualBox 虚拟化支持
+  virtualisation.virtualbox.host.enable = true;
 
   # 内核参数
   boot.kernelParams = [
@@ -43,6 +41,6 @@
 
   # 确保相关的包被安装
   environment.systemPackages = with pkgs; [
-    limine
+    # systemd-boot 由 NixOS 自动管理
   ];
 }

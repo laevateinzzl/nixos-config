@@ -81,13 +81,13 @@
     openFirewall = true;
   };
 
-  # USB热点支持
-  services.usbguard = {
-    enable = true;
-    ruleFiles = [
-      "/etc/usbguard/rules.conf"
-    ];
-  };
+  # USB热点支持 (初次安装时禁用，配置好规则后再启用)
+  # services.usbguard = {
+  #   enable = true;
+  #   ruleFiles = [
+  #     "/etc/usbguard/rules.conf"
+  #   ];
+  # };
 
   # 网络时间同步
   services.timesyncd.enable = true;

@@ -200,11 +200,11 @@
     # 按屏幕 DPI 缩放
     PerScreenDPI=True
     # 字体
-    Font="JetBrainsMono Nerd Font 12"
+    Font="JetBrains Maple Mono 12"
     # 菜单字体
-    MenuFont="JetBrainsMono Nerd Font 12"
+    MenuFont="JetBrains Maple Mono 12"
     # 输入法字体
-    InputMethodFont="JetBrainsMono Nerd Font 12"
+    InputMethodFont="JetBrains Maple Mono 12"
     # 显示候选词数量
     MaxHeight=200
     # 候选词数量
@@ -236,7 +236,7 @@
     # 活动背景颜色
     ActiveBackgroundColor=#45475a
     # 文本字体
-    TextFont="JetBrainsMono Nerd Font 12"
+    TextFont="JetBrains Maple Mono 12"
     # 文本颜色
     TextColor=#cdd6f4
     # 提示字体

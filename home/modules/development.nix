@@ -367,7 +367,7 @@ EOF
       # 基础设置
       "workbench.colorTheme" = "Catppuccin Mocha";
       "workbench.iconTheme" = "material-icon-theme";
-      "editor.fontFamily" = "JetBrainsMono Nerd Font";
+      "editor.fontFamily" = "JetBrains Maple Mono";
       "editor.fontSize" = 14;
       "editor.lineHeight" = 1.4;
       "editor.fontLigatures" = true;
@@ -384,7 +384,7 @@ EOF
       };
 
       # 终端设置
-      "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
+      "terminal.integrated.fontFamily" = "JetBrains Maple Mono";
       "terminal.integrated.fontSize" = 14;
       "terminal.integrated.shell.linux" = "/run/current-system/sw/bin/zsh";
 

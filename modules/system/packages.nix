@@ -47,7 +47,7 @@
     # 音频工具
     # pulseaudio # 使用pipewire代替
     pavucontrol
-    alsaUtils
+    alsa-utils
 
     # 硬件工具
     usbutils
@@ -95,13 +95,12 @@
     # 文档工具
     man-pages
     man-pages-posix
-    linux-manual
 
     # 其他实用工具
     tree
     ripgrep
     fd
-    exa
+    eza
     bat
     fzf
     jq
@@ -193,8 +192,8 @@
     devmon.enable = true;
     # udisks2.mountOnMedia = true;
 
-    # 电源管理
-    auto-cpufreq.enable = true;
+    # 电源管理已在 desktop.nix 中配置 power-profiles-daemon
+    # auto-cpufreq.enable = true;
 
     # 打印机支持（如果需要）
     # printing.enable = true;

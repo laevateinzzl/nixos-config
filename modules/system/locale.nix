@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
-{
+let
+  fusionJetBrainsMapleMono = pkgs.callPackage ../../packages/fonts/fusion-jetbrainsmaplemono.nix { };
+in {
   # 时区和本地化设置
   time.timeZone = "Asia/Shanghai";
   i18n.defaultLocale = "zh_CN.UTF-8";
@@ -48,41 +50,53 @@
   };
 
   # 安装中文字体
-  fonts.packages = with pkgs; [
-    # 中文显示字体
-    noto-fonts-cjk-sans
-    noto-fonts-cjk-serif
-    source-han-sans
-    source-han-serif
-    wqy_zenhei
-    wqy_microhei
+  fonts.packages =
+    let
+      mono = fusionJetBrainsMapleMono;
+    in
+    with pkgs; [
+      # 中文显示字体
+      lxgw-wenkai
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      source-han-sans
+      source-han-serif
+      wqy_zenhei
+      wqy_microhei
 
-    # emoji字体
-    noto-fonts-emoji
+      # emoji字体
+      noto-fonts-emoji
 
-    # 英文字体
-    noto-fonts
-    liberation_ttf
-    dejavu_fonts
+      # 英文字体
+      noto-fonts
+      liberation_ttf
+      dejavu_fonts
 
-    # 编程字体
-    (nerdfonts.override {
-      fonts = [
-        "FiraCode"
-        "JetBrainsMono"
-        "SourceCodePro"
-        "Hack"
-        "Ubuntu"
-      ];
-    })
-  ];
+      # 编程字体
+      mono
+      (nerdfonts.override {
+        fonts = [
+          "FiraCode"
+          "SourceCodePro"
+          "Hack"
+          "Ubuntu"
+        ];
+      })
+    ];
 
   # 字体配置
   fonts.fontconfig = {
     defaultFonts = {
-      sansSerif = [ "Noto Sans CJK SC" "Noto Sans" ];
-      serif = [ "Noto Serif CJK SC" "Noto Serif" ];
-      monospace = [ "JetBrainsMono Nerd Font" "Noto Sans Mono" ];
+      sansSerif = [ "LXGW WenKai" "Noto Sans CJK SC" "Noto Sans" ];
+      serif = [ "LXGW WenKai" "Noto Serif CJK SC" "Noto Serif" ];
+      monospace = [
+        "JetBrains Maple Mono"
+        "JetBrains Maple Mono NF"
+        "JetBrainsMapleMono"
+        "JetBrainsMono"
+        "Maple Mono"
+        "Noto Sans Mono"
+      ];
       emoji = [ "Noto Color Emoji" ];
     };
 

@@ -215,12 +215,12 @@
         "browser.display.foreground_color" = "#cdd6f4";
 
         # 字体设置
-        "font.name.serif.zh-CN" = "Noto Serif CJK SC";
-        "font.name.sans-serif.zh-CN" = "Noto Sans CJK SC";
-        "font.name.monospace.zh-CN" = "JetBrainsMono Nerd Font";
-        "font.name.serif.x-western" = "Noto Serif";
-        "font.name.sans-serif.x-western" = "Noto Sans";
-        "font.name.monospace.x-western" = "JetBrainsMono Nerd Font";
+        "font.name.serif.zh-CN" = "LXGW WenKai";
+        "font.name.sans-serif.zh-CN" = "LXGW WenKai";
+        "font.name.monospace.zh-CN" = "JetBrains Maple Mono";
+        "font.name.serif.x-western" = "LXGW WenKai";
+        "font.name.sans-serif.x-western" = "LXGW WenKai";
+        "font.name.monospace.x-western" = "JetBrains Maple Mono";
 
         # 启用用户Chrome样式
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;

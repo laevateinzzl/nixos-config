@@ -9,8 +9,8 @@
     "theme": "Catppuccin Mocha",
     "ui_font_size": 14,
     "buffer_font_size": 14,
-    "ui_font_family": "JetBrainsMono Nerd Font",
-    "buffer_font_family": "JetBrainsMono Nerd Font",
+    "ui_font_family": "JetBrains Maple Mono",
+    "buffer_font_family": "JetBrains Maple Mono",
     "buffer_line_height": {
       "custom": 1.4
     },
@@ -332,7 +332,7 @@
         "TERM": "xterm-256color",
         "COLORTERM": "truecolor"
       },
-      "font_family": "JetBrainsMono Nerd Font",
+      "font_family": "JetBrains Maple Mono",
       "font_size": 14,
       "line_height": "comfortable",
       "option_as_meta": false,

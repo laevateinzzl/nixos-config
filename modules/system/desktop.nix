@@ -1,6 +1,8 @@
 { config, pkgs, inputs, ... }:
 
-{
+let
+  fusionJetBrainsMapleMono = pkgs.callPackage ../../packages/fonts/fusion-jetbrainsmaplemono.nix { };
+in {
   # 启用Niri窗口管理器
   programs.niri = {
     enable = true;
@@ -63,7 +65,9 @@
     catppuccin-cursors.mochaDark
 
     # 字体
-    (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; })
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    fusionJetBrainsMapleMono
+    lxgw-wenkai
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
@@ -83,7 +87,7 @@
 
     # 电源管理
     power-profiles-daemon.enable = true;
-    tlp.enable = true;
+    # tlp.enable = true; # 与 power-profiles-daemon 互斥
 
     # 自动挂载
     gvfs.enable = true;
@@ -106,14 +110,12 @@
     # nvidia.package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
-  # 键盘和触摸板
-  services.xserver = {
-    libinput = {
-      enable = true;
-      touchpad = {
-        tapping = true;
-        naturalScrolling = true;
-      };
+  # 触摸板配置 (已从 services.xserver.libinput 迁移)
+  services.libinput = {
+    enable = true;
+    touchpad = {
+      tapping = true;
+      naturalScrolling = true;
     };
   };
 

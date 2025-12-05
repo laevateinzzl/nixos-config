@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
-{
+let
+  fusionJetBrainsMapleMono = pkgs.callPackage ../../packages/fonts/fusion-jetbrainsmaplemono.nix { };
+in {
   # Catppuccin 主题配置
 
   # 颜色变量定义
@@ -50,7 +52,7 @@
       package = pkgs.catppuccin-cursors;
     };
     font = {
-      name = "Noto Sans CJK SC";
+      name = "LXGW WenKai";
       size = 11;
     };
     gtk3.extraConfig = {
@@ -92,17 +94,17 @@
     (nerdfonts.override {
       fonts = [
         "FiraCode"
-        "JetBrainsMono"
         "SourceCodePro"
         "Hack"
         "Ubuntu"
       ];
     })
+    fusionJetBrainsMapleMono
+    lxgw-wenkai
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
     noto-fonts-emoji
-    jetbrains-mono
 
     # 壁纸切换脚本
     (writeShellScriptBin "wallpaper-cycle" ''
