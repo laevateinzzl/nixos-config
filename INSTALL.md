@@ -15,8 +15,10 @@
 
 #### 下载 NixOS
 ```bash
-# 从官方镜像站下载 NixOS ISO
-wget https://mirrors.tuna.tsinghua.edu.cn/nixos-release/23.11/nixos-23.11.20231215.a464338fe26c/x86_64-linux/nixos-plasma5-23.11.20231215.a464338fe26c-x86_64-linux.iso
+# 从官方镜像站下载 NixOS minimal ISO (推荐使用 unstable)
+wget https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
+# 或从清华镜像
+# wget https://mirrors.tuna.tsinghua.edu.cn/nixos-images/latest-nixos-minimal-x86_64-linux.iso
 ```
 
 #### 创建启动 U 盘
@@ -45,22 +47,21 @@ dhclient wlan0
 
 #### 分区磁盘（GPT + UEFI）
 ```bash
-# 启动 gparted 或使用 fdisk
+# 使用 fdisk 或 parted 分区
 fdisk /dev/sda
 
-# 推荐分区方案：
+# 推荐分区方案 (systemd-boot)：
 # /dev/sda1  512M  EFI 系统分区 (ESP)
-# /dev/sda2  1-2G  Boot 分区 (可选，limine)
-# /dev/sda3  剩余  根分区
+# /dev/sda2  剩余  根分区
 
 # 格式化分区
 mkfs.fat -F 32 /dev/sda1
-mkfs.ext4 /dev/sda3
+mkfs.ext4 /dev/sda2
 ```
 
 #### 挂载文件系统
 ```bash
-mount /dev/sda3 /mnt
+mount /dev/sda2 /mnt
 mkdir -p /mnt/boot
 mount /dev/sda1 /mnt/boot
 ```
@@ -74,19 +75,14 @@ nixos-generate-config --root /mnt
 
 #### 克隆配置文件
 ```bash
-git clone https://github.com/laevatein/nixos-config.git /mnt/etc/nixos
-# 或者复制配置文件到 /mnt/etc/nixos
-```
+# 先备份生成的 hardware-configuration.nix
+cp /mnt/etc/nixos/hardware-configuration.nix /tmp/hardware-configuration.nix
 
-#### 更新硬件配置
-```bash
-# 替换生成的 hardware-configuration.nix
-cp /mnt/etc/nixos/hosts/nixos/hardware-configuration.nix \
-   /mnt/etc/nixos/hosts/nixos/hardware-configuration.nix.backup
+# 克隆配置仓库
+git clone https://github.com/laevateinzzl/nixos-config.git /mnt/etc/nixos
 
-# 生成新的硬件配置
-nixos-generate-config --root /mnt --show-hardware-config > \
-   /mnt/etc/nixos/hosts/nixos/hardware-configuration.nix
+# 将硬件配置复制到正确位置
+cp /tmp/hardware-configuration.nix /mnt/etc/nixos/hosts/nixos/hardware-configuration.nix
 ```
 
 #### 修改配置
@@ -111,15 +107,16 @@ nixos-generate-config --root /mnt --show-hardware-config > \
 # 进入配置目录
 cd /mnt/etc/nixos
 
+# 创建用户密码哈希文件目录
+mkdir -p /mnt/etc/nixos/user-passwords
+
+# 生成并保存密码哈希 (会提示输入密码)
+nix-shell -p mkpasswd --run 'mkpasswd -m sha-512' > /mnt/etc/nixos/user-passwords/laevatein
+
 # 安装系统
-nixos-install --flake .#nixos
+nixos-install --flake .#nixos --no-root-passwd
 
-# 设置 root 密码
-passwd
-
-# 设置用户密码（如果需要在安装时设置）
-useradd -m laevatein
-passwd laevatein
+# 安装完成后会提示设置 root 密码
 ```
 
 ### 5. 完成安装
@@ -191,7 +188,7 @@ notify-send "Test" "NixOS 配置成功！" -u normal
 
 ### 系统模块 (`modules/system/`)
 
-- `boot.nix` - Limine bootloader 配置
+- `boot.nix` - systemd-boot 引导加载器配置
 - `display-manager.nix` - SDDM 显示管理器
 - `desktop.nix` - Niri 桌面环境和 Wayland 工具
 - `gaming.nix` - Steam 游戏环境
