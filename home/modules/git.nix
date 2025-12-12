@@ -3,8 +3,7 @@
 {
   programs.git = {
     enable = true;
-    userName = "Your Name";
-    userEmail = "your.email@example.com";
+    # userName/userEmail 由 home/default.nix 统一定义，避免冲突
 
     # 别名
     aliases = {

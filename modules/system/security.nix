@@ -137,8 +137,10 @@
     }
   ];
 
-  # 用户密码配置 (用户定义在 configuration.nix 中，这里仅设置密码以避免冲突)
-  users.users.laevatein.hashedPasswordFile = "/etc/nixos/user-passwords/laevatein";
+  # 用户密码配置：仅在文件存在时启用，避免评估阶段因缺失失败
+  users.users.laevatein.hashedPasswordFile =
+    lib.mkIf (builtins.pathExists "/etc/nixos/user-passwords/laevatein")
+      "/etc/nixos/user-passwords/laevatein";
 
   # 系统自动锁定
   services.logind = {

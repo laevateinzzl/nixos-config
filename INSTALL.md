@@ -16,7 +16,9 @@
 #### 下载 NixOS
 ```bash
 # 从官方镜像站下载 NixOS minimal ISO (推荐使用 unstable)
-wget https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
+# minimal ISO 可能没有 wget，可用 curl
+wget https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso \
+  || curl -L -o nixos.iso https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso
 # 或从清华镜像
 # wget https://mirrors.tuna.tsinghua.edu.cn/nixos-images/latest-nixos-minimal-x86_64-linux.iso
 ```
@@ -34,7 +36,7 @@ sync
 
 #### 启动并配置网络
 ```bash
-# 启动后进入 root shell
+# 安装环境默认已是 root；若不是可用 sudo -i
 sudo -i
 
 # 配置网络（如果需要）
@@ -66,6 +68,9 @@ mkdir -p /mnt/boot
 mount /dev/sda1 /mnt/boot
 ```
 
+> 提示：minimal ISO 的根目录是内存盘（空间较小）。后续下载/克隆请放在 `/mnt`，或先建临时目录：  
+> `mkdir -p /mnt/tmp && export TMPDIR=/mnt/tmp`
+
 ### 3. 配置系统
 
 #### 生成初始配置
@@ -91,6 +96,7 @@ cp /tmp/hardware-configuration.nix /mnt/etc/nixos/hosts/nixos/hardware-configura
 1. `/mnt/etc/nixos/hosts/nixos/hardware-configuration.nix`
    - 更新磁盘 UUID
    - 确认硬件配置正确
+   - 若未创建 swap 分区，请删除/注释 `swapDevices` 项
 
 2. `/mnt/etc/nixos/flake.nix`
    - 修改用户名（laevatein）
@@ -107,11 +113,15 @@ cp /tmp/hardware-configuration.nix /mnt/etc/nixos/hosts/nixos/hardware-configura
 # 进入配置目录
 cd /mnt/etc/nixos
 
-# 创建用户密码哈希文件目录
+# 创建用户密码哈希文件目录（注意：配置里读取的是 /etc/nixos/user-passwords/laevatein）
 mkdir -p /mnt/etc/nixos/user-passwords
 
 # 生成并保存密码哈希 (会提示输入密码)
 nix-shell -p mkpasswd --run 'mkpasswd -m sha-512' > /mnt/etc/nixos/user-passwords/laevatein
+
+# 由于安装阶段评估发生在 live 系统里，需同时放一份到 live 的 /etc/nixos
+mkdir -p /etc/nixos/user-passwords
+cp /mnt/etc/nixos/user-passwords/laevatein /etc/nixos/user-passwords/laevatein
 
 # 安装系统
 nixos-install --flake .#nixos --no-root-passwd

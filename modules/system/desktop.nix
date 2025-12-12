@@ -18,8 +18,7 @@ in {
     xwayland
 
     # Niri相关工具
-    niri
-    niri-validation
+    # niri 由 programs.niri.package 提供（flake 版本），避免双版本
 
     # Waybar状态栏
     (waybar.override {
